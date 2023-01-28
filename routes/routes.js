@@ -13,4 +13,8 @@ router.put('/dalil/:id', ctr.updateDalil);
 
 router.delete('/dalil/:id', ctr.deleteDalil);
 
+router.put('/dalil/tag/:id', ctr.addTag);
+
+router.delete('/dalil/tag/:id', ctr.deleteTag);
+
 export default router;

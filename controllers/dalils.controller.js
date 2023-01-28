@@ -51,7 +51,7 @@ export const updateDalil = async (req, res) => {
         const dalil = await Dalil.findByIdAndUpdate(
             req?.params?.id,
             req?.body,
-            { new: true, }
+            { new: true }
         );
 
         if (!dalil) {
@@ -90,6 +90,58 @@ export const deleteDalil = async (req, res) => {
     } catch (err) {
         return res.status(500).json({
             message: err.message || "Server error"
+        });
+    }
+};
+
+export const addTag = async (req, res) => {
+    try {
+        const dalil = await Dalil.findByIdAndUpdate(
+            req?.params?.id,
+            { $addToSet: { tags: req?.body?.tag } },
+            { new: true }
+        );
+
+        if (!dalil) {
+            return res.status(404).json({
+                message: 'Dalil not found',
+                data: [],
+            });
+        }
+
+        return res.status(200).json({
+            message: "Tag added",
+            data: dalil
+        });
+    } catch (err) {
+        return res.status(400).json({
+            message: err.message || "Bad request"
+        });
+    }
+};
+
+export const deleteTag = async (req, res) => {
+    try {
+        const dalil = await Dalil.findByIdAndUpdate(
+            req?.params?.id,
+            { $pull: { tags: { $in: req?.body?.tag } } },
+            { new: true }
+        );
+
+        if (!dalil) {
+            return res.status(404).json({
+                message: 'Dalil not found',
+                data: [],
+            });
+        }
+
+        return res.status(200).json({
+            message: "Tag deleted",
+            data: dalil
+        });
+    } catch (err) {
+        return res.status(400).json({
+            message: err.message || "Bad request"
         });
     }
 };
