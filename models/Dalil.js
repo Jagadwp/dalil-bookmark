@@ -20,7 +20,7 @@ const DalilSchema = new Schema({
         type: String,
         trim: true,
     },
-    tag: {
+    tags: {
         type: [String],
         required: true,
         default: undefined

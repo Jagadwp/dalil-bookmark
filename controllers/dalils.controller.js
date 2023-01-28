@@ -7,7 +7,22 @@ export const index = async (req, res) => {
 };
 
 export const renderDalils = async (req, res) => {
-    const dalils = await Dalil.find().lean();
+    const { tag, keyword } = req.query;
+    let dalils;
+
+    if (tag && !keyword) {
+        dalils = await Dalil.find({ tags: { $in: [tag.toLowerCase()] } });
+    } else if (!tag && keyword) {
+        dalils = await Dalil.find({ content: { "$regex": keyword, "$options": "i" } });
+    } else if (tag && keyword) {
+        dalils = await Dalil.find({
+            tags: { $in: [tag.toLowerCase()] },
+            content: { "$regex": keyword, "$options": "i" }
+        });
+    } else {
+        dalils = await Dalil.find().lean();
+    }
+
     return res.status(200).json({
         message: "Dalils rendered",
         data: dalils
@@ -75,33 +90,6 @@ export const deleteDalil = async (req, res) => {
     } catch (err) {
         return res.status(500).json({
             message: err.message || "Server error"
-        });
-    }
-};
-
-
-export const getDalilsByTag = async (req, res) => {
-    try {
-        const dalil = await Dalil.findByIdAndUpdate(
-            req?.params?.id,
-            req?.body,
-            { new: true, }
-        );
-
-        if (!dalil) {
-            return res.status(404).json({
-                message: 'Dalil not found',
-                data: [],
-            });
-        }
-
-        return res.status(200).json({
-            message: "Dalil updated",
-            data: dalil
-        });
-    } catch (err) {
-        return res.status(400).json({
-            message: err.message || "Bad request"
         });
     }
 };

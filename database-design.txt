@@ -4,4 +4,3 @@ content: isi -> text
 origin: quran, hadits, salaf-ulama -> varchar(20)
 person: varchar(100)
 Tag: array of string
-
